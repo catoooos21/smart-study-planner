@@ -164,4 +164,4 @@ smart-study-planner/
 
 ---
 
-Built as a school project. AI features powered by [Google Gemini](https://gemini.google.com/).
+AI features powered by [Google Gemini](https://gemini.google.com/).
