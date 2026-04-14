@@ -1,67 +1,87 @@
 # Smart Study Planner
 
-An AI-powered study planning web app that helps students manage their coursework, generate personalized study schedules, and turn lecture PDFs into instant study notes.
+> An AI-powered study planning app that turns your assignments and deadlines into a clear, prioritized daily schedule — and transforms lecture PDFs into instant study notes.
 
-Built with React, Vite, Tailwind CSS, and the Google Gemini API.
-
-> **Course:** _[Your course name]_
-> **Student:** _[Your name]_
-> **Instructor:** _[Instructor name]_
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&style=flat-square)
+![Vite](https://img.shields.io/badge/Vite-latest-646CFF?logo=vite&logoColor=white&style=flat-square)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square)
+![Gemini](https://img.shields.io/badge/Google_Gemini-AI-4285F4?logo=google&logoColor=white&style=flat-square)
 
 ---
 
-## What it does
+## Overview
 
-Smart Study Planner takes the guesswork out of studying. Instead of staring at a list of assignments and wondering where to start, students enter their subjects, assignments, and exams, and the app uses Google's Gemini AI to build a realistic, prioritized study schedule day by day. Students can also upload lecture PDFs and the AI will generate brief, focused study notes from them automatically.
+Most students already know what they have to do — they just don't know where to start. Smart Study Planner solves that by letting you enter your subjects, assignments, and exams, then using Google Gemini to generate a realistic 14-day study schedule with specific daily tasks, time estimates, priorities, and a short explanation of *why* each session is scheduled when it is.
 
-The goal is to reduce student stress by replacing vague to-do lists with clear, specific daily tasks that explain *why* each session matters.
+There's no backend, no account required, and no data leaves your browser except for the Gemini API calls.
 
 ---
 
 ## Features
 
-1. **Subject & assignment management** — Add courses with difficulty ratings, then track homework, essays, exams, and projects with due dates and estimated hours.
-2. **AI schedule generation** — Gemini reads the student's full course load and generates a 14-day plan with specific tasks, durations, priorities, and reasoning for each session.
-3. **Today view** — Shows the current day's sessions front and center, color-coded by priority, with the AI's strategy summary at the top.
-4. **Local persistence** — Everything is saved to the browser's localStorage via a custom `useLocalStorage` hook, so the app remembers everything between sessions with no backend needed.
-5. **Calendar export (.ics)** — One-click download of the full schedule as a standard iCalendar file. Importable into Google Calendar, Outlook, Apple Calendar, and any other calendar app.
-6. **PDF upload + AI notes** — Upload a lecture or chapter PDF (up to 5MB) and Gemini reads it, returning a concise paragraph of key concepts, focus areas, common mistakes to avoid, and a study tip.
-7. **Google Calendar integration** — One click opens each of today's study sessions in Google Calendar with the title, time, and description pre-filled, ready to save.
+### 1. Subject & Assignment Management
+Add courses with a difficulty rating (1–5), then track individual assignments, essays, exams, and projects with due dates and estimated hours.
+
+### 2. AI Schedule Generation
+Click "Generate plan" and Gemini builds a full 14-day study schedule from your course load. Each session includes a task description, duration, priority level, and the AI's reasoning for placing it on that day. The prompt enforces rules like spaced repetition, lighter days before exams, and never overscheduling.
+
+### 3. Today View
+Your current day's sessions shown front and center, color-coded by priority (high / medium / low), with the AI's overall strategy summary at the top so you know what the plan is trying to accomplish.
+
+### 4. Local Persistence
+Everything is saved to the browser's `localStorage` via a custom `useLocalStorage` hook. The app remembers all your data between sessions with no login or server needed. Data is stored under five keys: `ssp-view`, `ssp-subjects`, `ssp-assignments`, `ssp-materials`, and `ssp-schedule`.
+
+### 5. Calendar Export (.ics)
+Download your full schedule as a standard `.ics` iCalendar file with one click. Compatible with Google Calendar, Outlook, Apple Calendar, and any other calendar application.
+
+### 6. PDF Upload + AI Notes
+Upload a lecture or textbook PDF (up to 5 MB) and Gemini reads it directly. It returns a focused paragraph covering key concepts, areas to focus on, common mistakes to watch for, and a study tip — saved automatically to your materials list.
+
+### 7. Google Calendar Integration
+Open any of today's study sessions in Google Calendar with a single click. The event title, time, and description are pre-filled and ready to save. This uses link-based event creation rather than OAuth, which keeps the app simple and avoids requiring any account permissions.
 
 ---
 
 ## Screenshots
 
-### Today view
-![Today view](![](image.png))
+### Today View
+![Today view](screenshots/today.png)
 
-### Full schedule
-![Schedule view](![](image-1.png))
+### Full Schedule
+![Schedule view](screenshots/schedule.png)
 
-### Subjects & assignments
-![Subjects view](![alt text](image-2.png))
+### Subjects & Assignments
+![Subjects view](screenshots/subjects.png)
 
-### AI-generated notes from PDFs
+### AI Notes from PDF
 ![Materials view](screenshots/materials.png)
 
 ---
 
-## Tech stack
+## Tech Stack
 
-- **React 18** with hooks for all state management
-- **Vite** as the build tool and dev server
-- **Tailwind CSS** for styling
-- **Google Generative AI SDK** (`@google/generative-ai`) for Gemini API calls
-- **lucide-react** for icons
-- **No backend** — runs entirely in the browser
+| Layer | Technology |
+|---|---|
+| UI framework | React 18 (hooks only, no class components) |
+| Build tool | Vite |
+| Styling | Tailwind CSS |
+| AI | Google Gemini (`gemini-flash-latest`) via `@google/generative-ai` |
+| Icons | `lucide-react` |
+| Storage | Browser `localStorage` (no backend) |
 
 ---
 
-## How to run it locally
+## Getting Started
+
+### Prerequisites
+- Node.js 18 or later
+- A free Gemini API key from [aistudio.google.com](https://aistudio.google.com/)
+
+### Installation
 
 1. Clone the repository:
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/catoooos21/smart-study-planner.git
    cd smart-study-planner
    ```
 
@@ -70,13 +90,24 @@ The goal is to reduce student stress by replacing vague to-do lists with clear, 
    npm install
    ```
 
-3. Create a `.env.local` file in the project root and add your Gemini API key:
-   ```
-   VITE_GEMINI_API_KEY=your_key_here
-   ```
-   You can get a free Gemini API key at [aistudio.google.com](https://aistudio.google.com/).
+3. Get a Gemini API key and create your `.env.local` file:
 
-4. Start the dev server:
+   **Getting the key:**
+   - Go to [aistudio.google.com](https://aistudio.google.com/) and sign in with a Google account.
+   - Click **"Get API key"** in the left sidebar, then **"Create API key"**.
+   - Copy the key that appears (it starts with `AIza...`).
+
+   **Adding it to the project:**
+   - In the `smart-study-planner` folder, create a new file called exactly `.env.local` (note the dot at the start — no other extension).
+   - Open it in any text editor and paste this single line, replacing the placeholder with your actual key:
+     ```
+     VITE_GEMINI_API_KEY=AIzaSy...your_key_here
+     ```
+   - Save the file. You're done — this file is already in `.gitignore` so it will never be committed to GitHub.
+
+   > **Why `VITE_` prefix?** Vite only exposes environment variables that start with `VITE_` to the browser. Without it, the key would be undefined at runtime.
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
@@ -85,34 +116,34 @@ The goal is to reduce student stress by replacing vague to-do lists with clear, 
 
 ---
 
-## How it works
+## How It Works
 
-The core of the app is two Gemini API calls:
+The app makes two types of Gemini API calls:
 
-**1. Schedule generation.** When the user clicks "Generate plan," the app builds a structured JSON object describing all subjects, assignments, available study hours, and which subjects have uploaded materials. This is sent to `gemini-flash-latest` along with a detailed system prompt that defines the output schema and 10 planning rules (spaced repetition, lighter days before exams, never overscheduling, etc.). The model returns a full JSON schedule which is parsed and saved to localStorage.
+**Schedule generation.** When you click "Generate plan," the app assembles a structured JSON object with all your subjects, assignments, difficulty ratings, available hours, and which subjects have uploaded materials. This is sent to Gemini with a detailed system prompt that defines the output schema and enforces 10 planning rules. The model returns a JSON schedule which is parsed and written to localStorage.
 
-**2. PDF note generation.** When the user uploads a PDF, it's read in the browser as base64 and sent directly to Gemini as inline data alongside a prompt asking for brief study notes. Gemini returns a single paragraph of focused notes which are saved to the materials list.
+**PDF notes.** When you upload a PDF, it is read in the browser as base64 and sent to Gemini as inline data. The model returns a single focused paragraph of study notes which is saved to your materials list.
 
-For the calendar features, the `.ics` export builds a standard iCalendar file in pure JavaScript (no library needed), and the Google Calendar integration constructs pre-filled event creation URLs that open in a new tab. All data lives in localStorage under five keys (`ssp-view`, `ssp-subjects`, `ssp-assignments`, `ssp-materials`, `ssp-schedule`), each managed by the `useLocalStorage` custom hook.
+The `.ics` export is built in plain JavaScript with no external library. The Google Calendar integration constructs event creation URLs with query parameters pre-filled — no OAuth flow, no server, no tokens.
 
 ---
 
-## Project structure
+## Project Structure
 
 ```
 smart-study-planner/
 ├── src/
-│   ├── App.jsx              # Main app component with all views
-│   ├── main.jsx             # React entry point
-│   ├── index.css            # Tailwind imports
+│   ├── App.jsx                  # Main app — all views and state
+│   ├── main.jsx                 # React entry point
+│   ├── index.css                # Tailwind imports
 │   ├── hooks/
 │   │   └── useLocalStorage.js   # Custom hook for persistent state
 │   └── utils/
-│       ├── icsExport.js     # iCalendar file generator
+│       ├── icsExport.js         # iCalendar (.ics) file generator
 │       └── googleCalendar.js    # Google Calendar URL builder
-├── screenshots/             # README screenshots
+├── screenshots/                 # README screenshots
 ├── public/
-├── .env.local               # Gemini API key (not committed)
+├── .env.local                   # API key (not committed)
 ├── index.html
 ├── package.json
 ├── tailwind.config.js
@@ -121,15 +152,16 @@ smart-study-planner/
 
 ---
 
-## Known limitations & future work
+## Known Limitations
 
-- **Google Calendar sync uses link-based events, not OAuth.** The current integration opens Google Calendar in a new tab with each event pre-filled, which the user then saves with one click. Adding direct OAuth-based two-way sync was considered but deferred — it adds significant complexity (OAuth consent screens, token refresh, redirect URIs) that wasn't justified given that the link-based approach achieves the same end result in the user's actual Google Calendar.
-- **Single-user, single-device.** Because all data lives in localStorage, the app doesn't sync across devices and doesn't support multiple users. Adding a backend with authentication would be the natural next step for a production version.
-- **PDF size limit.** Files over 5MB are rejected to stay within Gemini's inline data limits. Larger PDFs would need to be uploaded via Gemini's File API instead.
-- **No offline AI.** Both AI features require an internet connection and a valid Gemini API key.
+**Google Calendar uses link-based events, not OAuth.** Adding two-way sync via OAuth would require a consent screen, token refresh, and redirect URI setup — significant complexity for a feature where the link approach achieves the same result. This was a deliberate scoping decision.
+
+**Single-user, single-device.** All data lives in `localStorage`, so it doesn't sync across devices. A production version would need a backend with authentication.
+
+**5 MB PDF limit.** Files over 5 MB are rejected to stay within Gemini's inline data limits. Larger files would need to use Gemini's File API instead.
+
+**No offline AI.** Schedule generation and PDF notes both require an internet connection and a valid API key.
 
 ---
 
-## Credits
-
-Built as a school project. AI features powered by Google Gemini.
+Built as a school project. AI features powered by [Google Gemini](https://gemini.google.com/).
