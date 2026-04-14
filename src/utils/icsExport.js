@@ -1,4 +1,5 @@
 // src/utils/icsExport.js
+import { DEFAULT_START_HOUR } from './studyConfig';
 
 function formatICSDate(date) {
   return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -12,8 +13,6 @@ function escapeICSText(text = '') {
     .replace(/;/g, '\\;');
 }
 
-// Default study block start time (local time). Change if you want.
-const DEFAULT_START_HOUR = 17; // 5:00 PM
 
 function flattenSchedule(scheduleData) {
   if (!scheduleData) return [];
@@ -59,7 +58,7 @@ function buildEvent(session, index) {
 
   const end = new Date(start.getTime() + session.durationMinutes * 60 * 1000);
 
-  const uid = `${Date.now()}-${index}@smart-study-planner`;
+  const uid = `${crypto.randomUUID()}-${index}@smart-study-planner`;
   const dtstamp = formatICSDate(new Date());
   const summary = escapeICSText(`${session.subject}: ${session.task}`);
   const description = escapeICSText(session.reasoning);

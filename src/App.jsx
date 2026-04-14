@@ -16,8 +16,10 @@ export default function App() {
   const [showAddAssignment, setShowAddAssignment] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
   const [toast, setToast] = useState(null);
+  const [gCalLinks, setGCalLinks] = useState([]);
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  // Use local date (not UTC) so the day is correct for all time zones
+  const todayStr = new Date().toLocaleDateString("en-CA"); // yields YYYY-MM-DD in local time
 
   const showToast = (msg) => {
     setToast(msg);
@@ -32,6 +34,9 @@ export default function App() {
     setGenerating(true);
 
     try {
+      // ⚠️ SECURITY: VITE_ env vars are bundled into the client JS and visible to anyone
+      // in DevTools or the built output. Before deploying publicly, move this call to
+      // a backend endpoint (e.g. a Vercel/Netlify function) so the key stays server-side.
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       if (!apiKey) {
         showToast("API key missing — check .env.local");
@@ -154,18 +159,25 @@ ${JSON.stringify(input, null, 2)}`;
     }
     const today = schedule.schedule.find((d) => d.date.startsWith(todayStr))
       || schedule.schedule[0];
-    todaySessions.forEach((s) => {
-      const url = buildGoogleCalendarUrl(s, today.date);
-      window.open(url, '_blank');
-    });
-    showToast(`Opened ${todaySessions.length} events in Google Calendar`);
+
+    // Open only the first URL directly (browsers block multiple popups triggered at once).
+    // For the remaining sessions, build links and let the user click them.
+    const urls = todaySessions.map((s) => buildGoogleCalendarUrl(s, today.date));
+    window.open(urls[0], '_blank');
+
+    if (urls.length > 1) {
+      // Store remaining URLs so the UI can render them as clickable links
+      setGCalLinks(urls.slice(1));
+      showToast(`Opened session 1 — click the links below for the rest`);
+    } else {
+      showToast("Opened in Google Calendar");
+    }
   };
 
   const todayDisplay = new Date(todayStr).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900" style={{ fontFamily: "'Fraunces', Georgia, serif" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
       {toast && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-stone-50 px-5 py-3 rounded-full text-sm flex items-center gap-2 shadow-2xl" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
@@ -271,6 +283,22 @@ ${JSON.stringify(input, null, 2)}`;
                     <Download className="w-4 h-4" /> Download .ics
                   </button>
                 </div>
+
+                {gCalLinks.length > 0 && (
+                  <div className="bg-stone-100 border border-stone-200 rounded-2xl p-4 space-y-2">
+                    <div className="text-xs uppercase tracking-wider text-stone-500 mb-2" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      Click to add remaining sessions to Google Calendar
+                    </div>
+                    {gCalLinks.map((url, i) => (
+                      <a key={i} href={url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-stone-700 hover:text-stone-900 hover:underline">
+                        <Calendar className="w-3 h-3 flex-shrink-0" />
+                        {todaySessions[i + 1]?.subject_name}: {todaySessions[i + 1]?.task}
+                      </a>
+                    ))}
+                    <button onClick={() => setGCalLinks([])} className="text-xs text-stone-400 hover:text-stone-600 mt-1">Dismiss</button>
+                  </div>
+                )}
               </>
             )}
 

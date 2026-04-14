@@ -1,4 +1,5 @@
 // src/utils/googleCalendar.js
+import { DEFAULT_START_HOUR } from './studyConfig';
 
 function formatGCalDate(date) {
   return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -10,7 +11,7 @@ export function buildGoogleCalendarUrl(session, dayDate) {
     day.getFullYear(),
     day.getMonth(),
     day.getDate(),
-    17, 0, 0
+    DEFAULT_START_HOUR, 0, 0
   );
   const end = new Date(start.getTime() + (session.duration_minutes || 30) * 60 * 1000);
 
