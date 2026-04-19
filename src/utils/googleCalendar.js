@@ -5,7 +5,7 @@ function formatGCalDate(date) {
   return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 }
 
-export function buildGoogleCalendarUrl(session, dayDate) {
+export function buildGoogleCalendarUrl(session, dayDate, offsetMinutes = 0) {
   const day = new Date(dayDate);
   const start = new Date(
     day.getFullYear(),
@@ -13,6 +13,7 @@ export function buildGoogleCalendarUrl(session, dayDate) {
     day.getDate(),
     DEFAULT_START_HOUR, 0, 0
   );
+  start.setMinutes(start.getMinutes() + offsetMinutes);
   const end = new Date(start.getTime() + (session.duration_minutes || 30) * 60 * 1000);
 
   const params = new URLSearchParams({
