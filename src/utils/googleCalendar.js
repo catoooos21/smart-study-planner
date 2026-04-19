@@ -1,8 +1,19 @@
 // src/utils/googleCalendar.js
 import { DEFAULT_START_HOUR } from './studyConfig';
 
+// Use local time (no Z) so Google Calendar places the event at the correct
+// local hour regardless of the user's timezone offset.
 function formatGCalDate(date) {
-  return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const pad = (n) => String(n).padStart(2, '0');
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) +
+    'T' +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
 }
 
 export function buildGoogleCalendarUrl(session, dayDate, offsetMinutes = 0) {
