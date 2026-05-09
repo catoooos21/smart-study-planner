@@ -669,7 +669,7 @@ function UploadForm({ subjects, onSubmit }) {
 
       const base64Data = await fileToBase64(file);
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
       const prompt = `You are a study assistant. Read the attached PDF and produce BRIEF study notes for a student.
 
